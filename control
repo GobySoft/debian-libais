@@ -1,7 +1,7 @@
 Source: libais
 Priority: optional
 Maintainer: Toby Schneider <tes.aubergine@gmail.com>
-Build-Depends: cdbs, debhelper (>= 8.0.0), cmake
+Build-Depends: cdbs, debhelper (>= 8.0.0), cmake, libstdc++-dev
 Standards-Version: 3.9.4
 Section: libs
 Homepage: https://github.com/schwehr/libais
