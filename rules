@@ -3,5 +3,10 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/cmake.mk
 
+UPSTREAM_LAST_RELEASE = 0.17
+UPSTREAM_URL = https://github.com/GobySoft/libais/archive/v$(UPSTREAM_LAST_RELEASE).tar.gz
+get-orig-source:
+	wget $(UPSTREAM_URL) -O libais_$(UPSTREAM_LAST_RELEASE).orig.tar.gz
+
 DEB_CMAKE_EXTRA_FLAGS = -DBUILD_SHARED_LIBS=ON
 
