@@ -1,0 +1,21 @@
+Source: libais
+Priority: optional
+Maintainer: Toby Schneider <tes.aubergine@gmail.com>
+Build-Depends: cdbs, debhelper (>= 8.0.0), cmake
+Standards-Version: 3.9.4
+Section: libs
+Homepage: https://github.com/schwehr/libais
+
+Package: libais-dev
+Section: libdevel
+Architecture: any
+Depends: libais1 (= ${binary:Version})
+Description: Development headers for AIS Library
+ Library for decoding maritime Automatic Identification System messages.
+
+Package: libais1
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Development headers for AIS Library
+ Library for decoding maritime Automatic Identification System messages.
