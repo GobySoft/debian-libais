@@ -1,0 +1,17 @@
+Index: libais-0.17/CMakeLists.txt
+===================================================================
+--- libais-0.17.orig/CMakeLists.txt
++++ libais-0.17/CMakeLists.txt
+@@ -23,5 +23,11 @@ endif()
+ 
+ set(PACKAGE_VERSION 0.17)
+ 
+-add_subdirectory(src)
++# override library version for debian sbuild cross-builds
++if(CMAKE_CROSSCOMPILING)
++  if (EXISTS "/etc/debian_version")
++    set(CMAKE_INSTALL_LIBDIR "lib/${CMAKE_LIBRARY_ARCHITECTURE}")
++  endif()
++endif()
+ 
++add_subdirectory(src)
