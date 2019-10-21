@@ -13,7 +13,7 @@ Index: libais-0.17/src/libais/CMakeLists.txt
 +++ libais-0.17/src/libais/CMakeLists.txt
 @@ -36,6 +36,13 @@ vdm.cpp
  target_include_directories(ais PUBLIC ${CMAKE_CURRENT_LIST_DIR})
- set_target_properties(ais PROPERTIES PUBLIC_HEADER ais.h)
+ set_target_properties(ais PROPERTIES PUBLIC_HEADER ais.h vdm.h)
  
 +# override library version for debian sbuild cross-builds
 +if(CMAKE_CROSSCOMPILING)

@@ -14,6 +14,15 @@ Index: libais-0.17/src/libais/CMakeLists.txt
 ===================================================================
 --- libais-0.17.orig/src/libais/CMakeLists.txt
 +++ libais-0.17/src/libais/CMakeLists.txt
+@@ -34,7 +34,7 @@ decode_body.cpp
+ vdm.cpp
+ )
+ target_include_directories(ais PUBLIC ${CMAKE_CURRENT_LIST_DIR})
+-set_target_properties(ais PROPERTIES PUBLIC_HEADER ais.h)
++set_target_properties(ais PROPERTIES PUBLIC_HEADER ais.h vdm.h)
+ 
+ include(GNUInstallDirs)
+ 
 @@ -44,7 +44,9 @@ install(TARGETS ais
    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
