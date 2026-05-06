@@ -23,7 +23,7 @@ export CC=$(DEB_HOST_GNU_TYPE)-gcc
 export CXX=$(DEB_HOST_GNU_TYPE)-g++
 
 %:
-	dh $@
+	dh $@ --buildsystem=cmake
 
 override_dh_auto_configure:
 	dh_auto_configure -- $(CMAKE_EXTRA_FLAGS)
