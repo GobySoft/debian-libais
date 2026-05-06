@@ -1,0 +1,24 @@
+Index: libais-0.17/src/libais/vdm.h
+===================================================================
+--- libais-0.17.orig/src/libais/vdm.h
++++ libais-0.17/src/libais/vdm.h
+@@ -63,6 +63,7 @@
+ #ifndef LIBAIS_VDM_H_
+ #define LIBAIS_VDM_H_
+ 
++#include <cstdint>
+ #include <deque>
+ #include <memory>
+ #include <string>
+Index: libais-0.17/src/libais/vdm.cpp
+===================================================================
+--- libais-0.17.orig/src/libais/vdm.cpp
++++ libais-0.17/src/libais/vdm.cpp
+@@ -22,6 +22,7 @@
+ 
+ #include <algorithm>
+ #include <cctype>
++#include <cstdint>
+ #include <deque>
+ #include <functional>
+ #include <iomanip>
