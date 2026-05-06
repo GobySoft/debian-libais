@@ -1,27 +1,29 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/class/cmake.mk
-
 UPSTREAM_LAST_RELEASE = 0.17
 UPSTREAM_URL = https://github.com/GobySoft/libais/archive/v$(UPSTREAM_LAST_RELEASE).tar.gz
 get-orig-source:
 	wget $(UPSTREAM_URL) -O libais_$(UPSTREAM_LAST_RELEASE).orig.tar.gz
 
-DEB_CMAKE_EXTRA_FLAGS = -DBUILD_SHARED_LIBS=ON
-DEB_BUILD_PARALLEL = true
+CMAKE_EXTRA_FLAGS = -DBUILD_SHARED_LIBS=ON
 
 DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_TARGET_ARCH ?= $(shell dpkg-architecture -qDEB_TARGET_ARCH)
 DEB_TARGET_GNU_CPU ?= $(shell dpkg-architecture -qDEB_TARGET_GNU_CPU)
 # cross compiling
 ifneq ($(DEB_BUILD_ARCH),$(DEB_TARGET_ARCH))
-	DEB_CMAKE_EXTRA_FLAGS += -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=$(DEB_TARGET_GNU_CPU)
+	CMAKE_EXTRA_FLAGS += -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=$(DEB_TARGET_GNU_CPU)
 endif
 
 $(info $$DEB_BUILD_ARCH is [${DEB_BUILD_ARCH}])
 $(info $$DEB_TARGET_ARCH is [${DEB_TARGET_ARCH}])
-$(info $$DEB_CMAKE_EXTRA_FLAGS is [${DEB_CMAKE_EXTRA_FLAGS}])
+$(info $$CMAKE_EXTRA_FLAGS is [${CMAKE_EXTRA_FLAGS}])
 
-CC=$(DEB_HOST_GNU_TYPE)-gcc
-CXX=$(DEB_HOST_GNU_TYPE)-g++
+export CC=$(DEB_HOST_GNU_TYPE)-gcc
+export CXX=$(DEB_HOST_GNU_TYPE)-g++
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- $(CMAKE_EXTRA_FLAGS)
