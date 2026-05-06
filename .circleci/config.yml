@@ -23,17 +23,13 @@ environment-template-armhf: &environment-template-armhf
   TARGET_ARCH: "armhf"
   DEB_BUILD_OPTIONS: "parallel=4 nocheck"
 
-environment-template-bullseye: &environment-template-bullseye
-  DISTRO_RELEASE_CODENAME: "bullseye"
-  DISTRO_RELEASE_VERSION: "debian11"
-
 environment-template-bookworm: &environment-template-bookworm
   DISTRO_RELEASE_CODENAME: "bookworm"
   DISTRO_RELEASE_VERSION: "debian12"
 
-environment-template-focal: &environment-template-focal
-  DISTRO_RELEASE_CODENAME: "focal"
-  DISTRO_RELEASE_VERSION: "ubuntu20.04"
+environment-template-trixie: &environment-template-trixie
+  DISTRO_RELEASE_CODENAME: "trixie"
+  DISTRO_RELEASE_VERSION: "debian13"
 
 environment-template-jammy: &environment-template-jammy
   DISTRO_RELEASE_CODENAME: "jammy"
@@ -42,23 +38,27 @@ environment-template-jammy: &environment-template-jammy
 environment-template-noble: &environment-template-noble
   DISTRO_RELEASE_CODENAME: "noble"
   DISTRO_RELEASE_VERSION: "ubuntu24.04"
+
+environment-template-resolute: &environment-template-resolute
+  DISTRO_RELEASE_CODENAME: "resolute"
+  DISTRO_RELEASE_VERSION: "ubuntu26.04"
   
 ## Pre-declare Docker containers
-
-docker-base-bullseye: &docker-base-bullseye
-  - image: gobysoft/debian-build-base:11.1
 
 docker-base-bookworm: &docker-base-bookworm
   - image: gobysoft/debian-build-base:12.1
 
-docker-base-focal: &docker-base-focal
-  - image: gobysoft/ubuntu-build-base:20.04.1
+docker-base-trixie: &docker-base-trixie
+  - image: gobysoft/debian-build-base:13.1
 
 docker-base-jammy: &docker-base-jammy
   - image: gobysoft/ubuntu-build-base:22.04.1
 
 docker-base-noble: &docker-base-noble
   - image: gobysoft/ubuntu-build-base:24.04.1
+
+docker-base-resolute: &docker-base-resolute
+  - image: gobysoft/ubuntu-build-base:26.04.1
     
 ## Pre-declare job templates
 job-template-amd64: &job-template-amd64
@@ -128,10 +128,10 @@ job-template-amd64: &job-template-amd64
 job-template-cross: &job-template-cross
   <<: *job-template-amd64
 
-# base upload off noble build
+# base upload off resolute build
 job-template-upload: &job-template-upload
   <<: *job-template-amd64
-  docker: *docker-base-noble
+  docker: *docker-base-resolute
   
 ## Begin actual config
 version: 2
@@ -151,35 +151,25 @@ workflows:
       #     requires:
       #       - get-orig-source
 
-      # - amd64-bullseye-build:
+      # - amd64-bookworm-build:
       #     requires:
       #       - get-orig-source
-      # - arm64-bullseye-build:
+      # - arm64-bookworm-build:
       #     requires:
       #       - get-orig-source
-      # - armhf-bullseye-build:
+      # - armhf-bookworm-build:
       #     requires:
       #       - get-orig-source
 
-      - amd64-bookworm-build:
+      - amd64-trixie-build:
           requires:
             - get-orig-source
-      - arm64-bookworm-build:
+      - arm64-trixie-build:
           requires:
             - get-orig-source
-      - armhf-bookworm-build:
+      - armhf-trixie-build:
           requires:
             - get-orig-source
-
-      # - amd64-focal-build:
-      #     requires:
-      #       - get-orig-source
-      # - arm64-focal-build:
-      #     requires:
-      #       - get-orig-source
-      # - armhf-focal-build:
-      #     requires:
-      #       - get-orig-source
 
       # - amd64-jammy-build:
       #     requires:
@@ -191,36 +181,45 @@ workflows:
       #     requires:
       #       - get-orig-source
 
+      # - amd64-noble-build:
+      #     requires:
+      #       - get-orig-source
+      # - arm64-noble-build:
+      #     requires:
+      #       - get-orig-source
+      # - armhf-noble-build:
+      #     requires:
+      #       - get-orig-source
 
-      - amd64-noble-build:
+      - amd64-resolute-build:
           requires:
             - get-orig-source
-      - arm64-noble-build:
+      - arm64-resolute-build:
           requires:
             - get-orig-source
-      - armhf-noble-build:
+      - armhf-resolute-build:
           requires:
             - get-orig-source
             
             
       - continuous-upload:
           requires:
-            # - arm64-bullseye-build
-            # - arm64-focal-build
+            # - arm64-bookworm-build
             # - arm64-jammy-build
+            # - arm64-noble-build
             # - amd64-buster-build
-            # - amd64-bullseye-build
-            # - amd64-focal-build
+            # - amd64-bookworm-build
             # - amd64-jammy-build
-            # - armhf-bullseye-build
-            # - armhf-focal-build
+            # - amd64-noble-build
+            # - armhf-bookworm-build
             # - armhf-jammy-build
-            - amd64-bookworm-build
-            - armhf-bookworm-build
-            - arm64-bookworm-build
-            - amd64-noble-build
-            - armhf-noble-build
-            - arm64-noble-build
+            # - armhf-noble-build
+            - amd64-trixie-build
+            - armhf-trixie-build
+            - arm64-trixie-build
+            - amd64-resolute-build
+            - armhf-resolute-build
+            - arm64-resolute-build
 
       - release-upload:
           requires:
@@ -228,17 +227,17 @@ workflows:
 jobs:
   get-orig-source:
     <<: *job-template-amd64
-    docker: *docker-base-noble
+    docker: *docker-base-resolute
     environment:
       <<: *environment-template-common
-      <<: *environment-template-noble
+      <<: *environment-template-resolute
       <<: *environment-template-amd64
     steps:
       - checkout
       - run:
           name: Install required packages
           command: |          
-            apt-get update && apt-get -y install cdbs wget     
+            apt-get update && apt-get -y install wget     
       - run:
           name: Get original source tarball
           command: |
@@ -262,28 +261,6 @@ jobs:
             - '*.tar.gz'
             - 'changelog'
 
-  amd64-bullseye-build:
-    <<: *job-template-amd64
-    docker: *docker-base-bullseye
-    environment:
-      <<: *environment-template-common
-      <<: *environment-template-bullseye
-      <<: *environment-template-amd64
-  arm64-bullseye-build: 
-    <<: *job-template-cross
-    docker: *docker-base-bullseye
-    environment:
-      <<: *environment-template-common
-      <<: *environment-template-bullseye
-      <<: *environment-template-arm64
-  armhf-bullseye-build: 
-    <<: *job-template-cross
-    docker: *docker-base-bullseye
-    environment:
-      <<: *environment-template-common
-      <<: *environment-template-bullseye
-      <<: *environment-template-armhf
-
   amd64-bookworm-build:
     <<: *job-template-amd64
     docker: *docker-base-bookworm
@@ -306,26 +283,26 @@ jobs:
       <<: *environment-template-bookworm
       <<: *environment-template-armhf
 
-  amd64-focal-build:
+  amd64-trixie-build:
     <<: *job-template-amd64
-    docker: *docker-base-focal
+    docker: *docker-base-trixie
     environment:
       <<: *environment-template-common
-      <<: *environment-template-focal
+      <<: *environment-template-trixie
       <<: *environment-template-amd64
-  arm64-focal-build: 
+  arm64-trixie-build: 
     <<: *job-template-cross
-    docker: *docker-base-focal
+    docker: *docker-base-trixie
     environment:
       <<: *environment-template-common
-      <<: *environment-template-focal
+      <<: *environment-template-trixie
       <<: *environment-template-arm64
-  armhf-focal-build: 
+  armhf-trixie-build: 
     <<: *job-template-cross
-    docker: *docker-base-focal
+    docker: *docker-base-trixie
     environment:
       <<: *environment-template-common
-      <<: *environment-template-focal
+      <<: *environment-template-trixie
       <<: *environment-template-armhf
 
   amd64-jammy-build:
@@ -373,13 +350,35 @@ jobs:
       <<: *environment-template-noble
       <<: *environment-template-armhf
 
+  amd64-resolute-build:
+    <<: *job-template-amd64
+    docker: *docker-base-resolute
+    environment:
+      <<: *environment-template-common
+      <<: *environment-template-resolute
+      <<: *environment-template-amd64
+  arm64-resolute-build: 
+    <<: *job-template-cross
+    docker: *docker-base-resolute
+    environment:
+      <<: *environment-template-common
+      <<: *environment-template-resolute
+      <<: *environment-template-arm64
+  armhf-resolute-build: 
+    <<: *job-template-cross
+    docker: *docker-base-resolute
+    environment:
+      <<: *environment-template-common
+      <<: *environment-template-resolute
+      <<: *environment-template-armhf
+
       
       
   continuous-upload:
     <<: *job-template-upload
     environment:
       <<: *environment-template-common
-      <<: *environment-template-noble
+      <<: *environment-template-resolute
       <<: *environment-template-amd64
       UPLOAD_DESTINATION: "gobysoft-continuous"
     steps: &steps-upload
@@ -408,7 +407,7 @@ jobs:
     <<: *job-template-upload
     environment:
       <<: *environment-template-common
-      <<: *environment-template-noble
+      <<: *environment-template-resolute
       <<: *environment-template-amd64
       UPLOAD_DESTINATION: "gobysoft-release"
     steps: *steps-upload
