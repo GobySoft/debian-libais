@@ -5,7 +5,7 @@ UPSTREAM_URL = https://github.com/GobySoft/libais/archive/v$(UPSTREAM_LAST_RELEA
 get-orig-source:
 	wget $(UPSTREAM_URL) -O libais_$(UPSTREAM_LAST_RELEASE).orig.tar.gz
 
-CMAKE_EXTRA_FLAGS = -DBUILD_SHARED_LIBS=ON
+CMAKE_EXTRA_FLAGS = -DBUILD_SHARED_LIBS=ON -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 DEB_BUILD_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_TARGET_ARCH ?= $(shell dpkg-architecture -qDEB_TARGET_ARCH)
